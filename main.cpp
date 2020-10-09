@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
     }
 
     videoindex = -1;
-    for(int i = 0; i < pFormatCtx->nb_streams; i ++) {
+    for(int i = 0; i < pFormatCtx->nb_streams; i++) {
         if(pFormatCtx->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO){
             videoindex = i;
             break;
@@ -91,7 +91,6 @@ int main(int argc, char* argv[]) {
         printf("Didn't find a video stream.\n");
         return -1;
     }
-
 
     pCodecCtx = pFormatCtx->streams[videoindex]->codec;
     pCodec = avcodec_find_decoder(pCodecCtx->codec_id);
@@ -109,8 +108,10 @@ int main(int argc, char* argv[]) {
     pFrame=av_frame_alloc();
     pFrameYUV=av_frame_alloc();
     out_buffer=(uint8_t *)av_malloc(avpicture_get_size(AV_PIX_FMT_YUV420P, pCodecCtx->width, pCodecCtx->height));
+    // int avpicture_fill(AVPicture *picture, const uint8_t *ptr, AVPixelFormat pix_fmt, int width, int height)
     avpicture_fill((AVPicture *)pFrameYUV, out_buffer, AV_PIX_FMT_YUV420P, pCodecCtx->width, pCodecCtx->height);
-
+    // SwsContext *sws_getContext(int srcW, int srcH, AVPixelFormat srcFormat,
+    //                            int dstW, int dstH, AVPixelFormat dstFormat, int flags, SwsFilter *srcFilter, SwsFilter *dstFilter, const double *param)
     img_convert_ctx = sws_getContext(pCodecCtx->width, pCodecCtx->height, pCodecCtx->pix_fmt,
                                      pCodecCtx->width, pCodecCtx->height, AV_PIX_FMT_YUV420P, SWS_BICUBIC, NULL, NULL, NULL);
 
@@ -119,8 +120,9 @@ int main(int argc, char* argv[]) {
         printf( "Could not initialize SDL - %s\n", SDL_GetError());
         return -1;
     }
+
     //SDL 2.0 Support for multiple windows
-    // 这里通过codecctx拿到视频的长宽信息，给到SDL
+    // Get width & height from codec, give it to SDL
     screen_w = pCodecCtx->width;
     screen_h = pCodecCtx->height;
     screen = SDL_CreateWindow("Simplest ffmpeg player's Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
@@ -130,6 +132,7 @@ int main(int argc, char* argv[]) {
         printf("SDL: could not create window - exiting:%s\n",SDL_GetError());
         return -1;
     }
+
     sdlRenderer = SDL_CreateRenderer(screen, -1, 0);
     //IYUV: Y + U + V  (3 planes)
     //YV12: Y + V + U  (3 planes)
@@ -146,19 +149,23 @@ int main(int argc, char* argv[]) {
     //------------SDL End------------
     //Event Loop
 
-    for (;;) {
+    while(1) {
         //Wait
         SDL_WaitEvent(&event);
         if(event.type == SFM_REFRESH_EVENT) {
-            //------------------------------
+            // av_read_frame: Get AVpacket From AVFormatContext
             if(av_read_frame(pFormatCtx, packet) >= 0) {
                 if(packet->stream_index == videoindex) {
+                    // avcodec_decode_video2: Decode the video frame of size avpkt->size from avpkt->data into picture.
                     ret = avcodec_decode_video2(pCodecCtx, pFrame, &got_picture, packet);
                     if(ret < 0) {
                         printf("Decode Error.\n");
                         return -1;
                     }
                     if(got_picture) {
+                        // int sws_scale(SwsContext *c, const uint8_t * const *srcSlice, const int *srcStride, int srcSliceY, int srcSliceH, uint8_t * const *dst, const int *dstStride)
+                        // Scale the image slice in srcSlice and put the resulting scaled slice in the image in dst. A slice is a sequence of consecutive rows in an image.
+                        // pFrame -> pFrameYUV
                         sws_scale(img_convert_ctx, (const uint8_t* const*)pFrame->data, pFrame->linesize, 0, pCodecCtx->height, pFrameYUV->data, pFrameYUV->linesize);
                         //SDL---------------------------
                         SDL_UpdateTexture( sdlTexture, NULL, pFrameYUV->data[0], pFrameYUV->linesize[0] );
