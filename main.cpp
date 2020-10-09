@@ -7,8 +7,8 @@ using namespace std;
 
 const int bpp = 12;
 
-int screen_w = 640, screen_h = 360;
-const int pixel_w = 640,pixel_h = 360;
+int screen_w = 320, screen_h = 180;
+const int pixel_w = 320,pixel_h = 180;
 
 unsigned char buffer[pixel_w*pixel_h*bpp/8];
 
@@ -60,7 +60,7 @@ int main(int argc, char* argv[]) {
     SDL_Texture* sdlTexture = SDL_CreateTexture(sdlRenderer,pixformat, SDL_TEXTUREACCESS_STREAMING,pixel_w,pixel_h);
 
     FILE *fp=NULL;
-    fp=fopen("sintel_640_360.yuv","rb+");
+    fp=fopen("test_yuv420p_320x180.yuv","rb+");
 
     if(fp==NULL){
         printf("cannot open this file\n");

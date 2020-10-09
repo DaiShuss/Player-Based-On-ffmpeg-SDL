@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/Users/tudaijian/CLionProjects/TrySDL/main.cpp" "/Users/tudaijian/CLionProjects/TrySDL/cmake-build-debug/CMakeFiles/TrySDL.dir/main.cpp.o"
+  "/Users/danieltu/Simple-Player-Based-On-FFmpeg-SDL/main.cpp" "/Users/danieltu/Simple-Player-Based-On-FFmpeg-SDL/cmake-build-debug/CMakeFiles/TrySDL.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "AppleClang")
 

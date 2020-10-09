@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/Users/tudaijian/CLionProjects/TrySDL/main.cpp
+/Users/danieltu/Simple-Player-Based-On-FFmpeg-SDL/main.cpp
 iostream
 -
 SDL2/SDL.h
-/Users/tudaijian/CLionProjects/TrySDL/SDL2/SDL.h
+/Users/danieltu/Simple-Player-Based-On-FFmpeg-SDL/SDL2/SDL.h
 
 /usr/local/Cellar/sdl2/2.0.12_1/include/SDL2/SDL.h
 SDL_main.h
