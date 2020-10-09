@@ -10,6 +10,7 @@ set(CMAKE_CXX_COMPILER_ID "AppleClang")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "/usr/local/Cellar/ffmpeg/4.3.1_1/include"
   "/usr/local/Cellar/sdl2/2.0.12_1/include"
   )
 

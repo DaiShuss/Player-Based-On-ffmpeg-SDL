@@ -6,5 +6,5 @@ CXX_FLAGS = -g -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/Ma
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/usr/local/Cellar/sdl2/2.0.12_1/include 
+CXX_INCLUDES = -I/usr/local/Cellar/ffmpeg/4.3.1_1/include -I/usr/local/Cellar/sdl2/2.0.12_1/include 
 
