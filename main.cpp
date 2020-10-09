@@ -43,6 +43,10 @@ int sfp_refresh_thread(void *opaque){
 }
 
 int main(int argc, char* argv[]) {
+    if(argc < 2) {
+        cout<<"ERR: LACK OF INPUT FILE!"<<endl;
+        return 0;
+    }
     //------------FFmpeg----------------
     AVFormatContext	*pFormatCtx;
     int				videoindex;
@@ -64,13 +68,14 @@ int main(int argc, char* argv[]) {
 
     struct SwsContext *img_convert_ctx;
 
-    char filepath[] = "屌丝男士.mov";
+    char filepath[500];
+    strcpy(filepath, argv[1]);
 
     av_register_all();
     avformat_network_init();
     pFormatCtx = avformat_alloc_context();
 
-    if(avformat_open_input(&pFormatCtx,filepath,NULL,NULL) !=0 ) {
+    if(avformat_open_input(&pFormatCtx, filepath,NULL,NULL) !=0 ) {
         printf("Couldn't open input stream.\n");
         return -1;
     }
