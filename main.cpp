@@ -24,14 +24,22 @@ extern "C"
 #define SFM_BREAK_EVENT  (SDL_USEREVENT + 2)
 
 int thread_exit = 0;
+int thread_stop = 0;
 
 int sfp_refresh_thread(void *opaque){
     thread_exit = 0;
     while (!thread_exit) {
+        cout<<"refresh"<<endl;
         SDL_Event event;
         event.type = SFM_REFRESH_EVENT;
         SDL_PushEvent(&event);
         SDL_Delay(10);
+        if(thread_stop) {
+            while (thread_stop) {
+                cout<<"sleep"<<endl;
+                SDL_Delay(1);
+            }
+        }
     }
     thread_exit=0;
     //Break
@@ -39,6 +47,12 @@ int sfp_refresh_thread(void *opaque){
     event.type = SFM_BREAK_EVENT;
     SDL_PushEvent(&event);
 
+    return 0;
+}
+
+
+
+int sfp_stop_thread(void *opaque){
     return 0;
 }
 
@@ -63,7 +77,7 @@ int main(int argc, char* argv[]) {
     SDL_Renderer* sdlRenderer;
     SDL_Texture* sdlTexture;
     SDL_Rect sdlRect;
-    SDL_Thread *video_tid;
+    SDL_Thread *video_tid, *video_stop_tid;
     SDL_Event event;
 
     struct SwsContext *img_convert_ctx;
@@ -151,6 +165,7 @@ int main(int argc, char* argv[]) {
     packet = (AVPacket *)av_malloc(sizeof(AVPacket));
 
     video_tid = SDL_CreateThread(sfp_refresh_thread,NULL,NULL);
+    video_stop_tid = SDL_CreateThread(sfp_stop_thread,NULL,NULL);
     //------------SDL End------------
     //Event Loop
 
@@ -189,10 +204,20 @@ int main(int argc, char* argv[]) {
         } else if(event.type == SDL_WINDOWEVENT) {
             //If Resize
             SDL_GetWindowSize(screen, &screen_w, &screen_h);
+        } else if(event.type == SDL_MOUSEBUTTONDOWN) {
+
         } else if(event.type == SDL_QUIT) {
             thread_exit = 1;
         } else if(event.type == SFM_BREAK_EVENT) {
             break;
+        } else if(event.type == SDL_KEYDOWN) {
+            if(event.key.keysym.sym == SDLK_s) {
+                cout<<"Stop"<<endl;
+                thread_stop = 1;
+            } else if(event.key.keysym.sym == SDLK_r) {
+                cout<<"Resume"<<endl;
+                thread_stop = 0;
+            }
         }
     }
 
