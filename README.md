@@ -1,1 +1,1 @@
-# Player-Based-On-ffmpeg-SDL
+# Player-Based-On-FFmpeg-SDL
